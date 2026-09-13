@@ -1,9 +1,8 @@
-// 1. I-setup ang Supabase Connection
-// HINUMDOMI: Ilisi ni sa imong tinuod nga Supabase URL ug Anon Key
+// 1. I-setup ang Supabase Connection (Gamita ang supabaseClient)
 const SUPABASE_URL = 'https://iilfklquzyxmdergwawh.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_xO3twPzyDBLhdltnkwoS3w_xswYLyf_';
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // 2. I-register ang Service Worker (Para sa PWA ug Offline Mode)
 if ('serviceWorker' in navigator) {
@@ -30,7 +29,7 @@ const userEmailDisplay = document.getElementById('user-email');
 
 // 3. I-CHECK KUNG NAKA-LOGIN NA BA DAAN (Session Check)
 async function checkSession() {
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await supabaseClient.auth.getSession();
     
     if (session) {
         // Naay naka-login, i-pakita ang dashboard
@@ -50,7 +49,7 @@ if (loginForm) {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password,
         });
@@ -67,7 +66,7 @@ if (loginForm) {
 // 5. LOGIC PARA MU-GAWAS (Sign Out)
 if (logoutBtn) {
     logoutBtn.addEventListener('click', async () => {
-        const { error } = await supabase.auth.signOut();
+        const { error } = await supabaseClient.auth.signOut();
         if (!error) {
             showLogin();
         }
