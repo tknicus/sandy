@@ -1,11 +1,11 @@
 // 1. I-setup ang Supabase Connection
 // HINUMDOMI: Ilisi ni sa imong tinuod nga Supabase URL ug Anon Key
-const SUPABASE_URL = 'https://imo-nga-project-id.supabase.co';
-const SUPABASE_ANON_KEY = 'imo-nga-taas-nga-anon-key';
+const SUPABASE_URL = 'https://iilfklquzyxmdergwawh.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_xO3twPzyDBLhdltnkwoS3w_xswYLyf_';
 
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// 2. I-register ang Service Worker (Para sa PWA)
+// 2. I-register ang Service Worker (Para sa PWA ug Offline Mode)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
@@ -18,22 +18,77 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// 3. Simple Test para masiguro nga konektado sa Supabase
-async function checkConnection() {
-    const appContainer = document.getElementById('app-container');
+// ==================== AUTHENTICATION & UI LOGIC ====================
+
+// DOM Elements
+const loginScreen = document.getElementById('login-screen');
+const dashboardScreen = document.getElementById('dashboard-screen');
+const loginForm = document.getElementById('login-form');
+const loginError = document.getElementById('login-error');
+const logoutBtn = document.getElementById('logout-btn');
+const userEmailDisplay = document.getElementById('user-email');
+
+// 3. I-CHECK KUNG NAKA-LOGIN NA BA DAAN (Session Check)
+async function checkSession() {
+    const { data: { session } } = await supabase.auth.getSession();
     
-    // Suwayan nato og kuha ang listahan sa mekaniko
-    let { data: mechanics, error } = await supabase
-        .from('rs_mechanics')
-        .select('*');
-        
-    if (error) {
-        appContainer.innerHTML = `<h2>Error: ${error.message}</h2>`;
+    if (session) {
+        // Naay naka-login, i-pakita ang dashboard
+        showDashboard(session.user.email);
     } else {
-        appContainer.innerHTML = `<h2>System Ready! Connected sa Supabase.</h2>
-                                  <p>Ready na i-build ang UI.</p>`;
+        // Walay naka-login, i-pakita ang login screen
+        showLogin();
     }
 }
 
-// Padaganon inig load sa page
-checkConnection();
+// 4. LOGIC PARA MUKUHA OG SESSION INIG SULOD (Sign In)
+if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Pugngan ang page nga mu-refresh
+        loginError.textContent = "Nag-verify..."; // Loading state
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
+
+        if (error) {
+            loginError.textContent = "Sayop ang email o password. Sulayi usab.";
+        } else {
+            loginError.textContent = "";
+            showDashboard(data.user.email);
+        }
+    });
+}
+
+// 5. LOGIC PARA MU-GAWAS (Sign Out)
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+        const { error } = await supabase.auth.signOut();
+        if (!error) {
+            showLogin();
+        }
+    });
+}
+
+// UTILITY FUNCTIONS PARA MU-SWITCH OG SCREEN
+function showDashboard(email) {
+    if(loginScreen) loginScreen.classList.add('hidden');
+    if(dashboardScreen) dashboardScreen.classList.remove('hidden');
+    if(userEmailDisplay) userEmailDisplay.textContent = email;
+}
+
+function showLogin() {
+    if(dashboardScreen) dashboardScreen.classList.add('hidden');
+    if(loginScreen) loginScreen.classList.remove('hidden');
+    const emailInput = document.getElementById('email');
+    const passInput = document.getElementById('password');
+    if (emailInput) emailInput.value = '';
+    if (passInput) passInput.value = '';
+}
+
+// Padaganon inig abli sa app
+checkSession();
