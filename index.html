@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RS Motor Repair Shop</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Icons (Boxicons) -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- ==================== LOGIN SCREEN ==================== -->
+    <div id="login-screen" class="screen-container">
+        <div class="login-box">
+            <div class="login-header">
+                <i class='bx bxs-wrench' style="font-size: 3rem; color: #2563eb;"></i>
+                <h2>RS Shop System</h2>
+                <p>Palihug pag-login aron makasulod</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="email" required placeholder="admin@shop.com">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" required placeholder="********">
+                </div>
+                <button type="submit" id="login-btn">Sulod</button>
+                <div id="login-error" class="error-msg"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MASTER DASHBOARD ==================== -->
+    <div id="dashboard-screen" class="screen-container hidden">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <i class='bx bxs-car-mechanic'></i>
+                <span>RS Admin</span>
+            </div>
+            <ul class="nav-links">
+                <li class="active"><a href="#" id="nav-dashboard"><i class='bx bxs-dashboard'></i> Dashboard</a></li>
+                <li><a href="#" id="nav-jo"><i class='bx bx-task'></i> Job Orders</a></li>
+                <li><a href="#" id="nav-inventory"><i class='bx bx-box'></i> Inventory</a></li>
+                <li><a href="#" id="nav-mechanics"><i class='bx bx-group'></i> Mechanics (DTR)</a></li>
+                <li><a href="#" id="nav-customers"><i class='bx bxs-contact'></i> Customers</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-title">
+                    <h2 id="page-title">Dashboard</h2>
+                </div>
+                <div class="header-user">
+                    <span id="user-email">admin@shop.com</span>
+                    <button id="logout-btn" class="logout-btn"><i class='bx bx-log-out'></i> Gawas</button>
+                </div>
+            </header>
+
+            <!-- Dynamic Content Load Dinhi -->
+            <section id="content-area" class="content-area">
+                <div class="welcome-card">
+                    <h3>Maayong Pag-abot sa System!</h3>
+                    <p>Kini ang imong main dashboard. Ang data mo-load dinhi taud-taud.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Core App Logic -->
+    <script src="js/app.js"></script>
+</body>
+</html>
